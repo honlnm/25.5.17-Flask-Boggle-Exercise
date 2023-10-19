@@ -3,6 +3,7 @@ $('input').attr('disabled', 'disabled');
 //starting values:
 $('#timer').text(60)
 $('#score').text(0)
+$('#high-score').text(0)
 
 //msg------------------
 $('#guess_form').submit(function (evt) {
@@ -52,6 +53,16 @@ async function getResponse() {
     }
 }
 
+async function getScoreResponse() {
+    const $score = $('#score').text()
+    const resp = await axios.get("/score", { params: { score: $score } })
+    if (resp.data.score === $score) {
+        addMsg()
+        $('temp_msg').text(`New Record: ${$score}`)
+        $('#high-score').text($score)
+    }
+}
+
 //Timer----------------
 
 function timer() {
@@ -68,10 +79,12 @@ function timerRundown() {
             clearInterval(timerStart);
             $('#start').removeAttr('disabled');
             $('input').attr('disabled', 'disabled');
+            //score-------------------
             $.ajax({
                 type: "GET",
                 url: '/score',
-                data: { score: $('#score').text() },
+                data: { score: $('#score').val() },
+                success: getScoreResponse()
             });
         }
         timer()
