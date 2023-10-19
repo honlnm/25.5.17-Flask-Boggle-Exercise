@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/app.css">
+    <title>{% block title%}{% endblock %}</title>
+</head>
+
+<body>
+    <h1>BOGGLE</h1>
+    <aside id="game-data">
+        <div id="msg">
+        </div>
+        <div id="high-score-wrapper">
+            <p>High Score: <span id="high-score"></span></p>
+        </div>
+        <div id="score-wrapper">
+            <p>Score: <span id="score"></span></p>
+        </div>
+        <div id="timer_wrapper">
+            <p>You have: <span id="timer"></span> seconds remaining!</p>
+            <button id="start">START GAME</button>
+        </div>
+    </aside>
+    <section id="game">
+        <div id="gameboard">
+            {% for lst in board %}
+            <section class="row">
+                {% for ltr in lst %}
+                <section class='column'>
+                    {{ltr}}
+                </section>
+                {% endfor %}
+            </section>
+            {% endfor %}
+        </div>
+        <div id="guess_form_wrapper">
+            <form action="" id="guess_form">
+                <label for="guess_input_box">GUESS:</label>
+                <input type="text" id="guess_input_box">
+                <button id="guess_submit_button">Submit</button>
+            </form>
+        </div>
+    </section>
+    {% block body %}
+    {% endblock %}
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="static/boggle.js"></script>
+</body>
+
+</html>
