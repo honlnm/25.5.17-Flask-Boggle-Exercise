@@ -29,7 +29,7 @@ def store_score():
     if int(score) > int(high_score):
         session['high-score'] = int(score)
         return jsonify({'score': score})
-    return jsonify({'score': session[high-score]})
+    return jsonify({'score': session['high-score']})
     
 
 

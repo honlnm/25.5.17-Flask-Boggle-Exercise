@@ -1,7 +1,7 @@
 $('input').attr('disabled', 'disabled');
 
 //starting values:
-$('#timer').text(60)
+$('#timer').text(10)
 $('#score').text(0)
 $('#high-score').text(0)
 
@@ -53,16 +53,6 @@ async function getResponse() {
     }
 }
 
-async function getScoreResponse() {
-    const $score = $('#score').text()
-    const resp = await axios.get("/score", { params: { score: $score } })
-    if (resp.data.score === $score) {
-        addMsg()
-        $('temp_msg').text(`New Record: ${$score}`)
-        $('#high-score').text($score)
-    }
-}
-
 //Timer----------------
 
 function timer() {
@@ -73,19 +63,27 @@ function timer() {
 
 function timerRundown() {
     timesRun = 0;
-    let timerStart = setInterval(function () {
+    let timerStart = setInterval(async function () {
         timesRun += 1;
-        if (timesRun === 60) {
+        if (timesRun === 10) {
             clearInterval(timerStart);
             $('#start').removeAttr('disabled');
             $('input').attr('disabled', 'disabled');
             //score-------------------
-            $.ajax({
-                type: "GET",
-                url: '/score',
-                data: { score: $('#score').val() },
-                success: getScoreResponse()
-            });
+            debugger
+            const game_score = $('#score').text()
+            const resp = await axios.get("/score", { params: { score: game_score } })
+            if (parseInt(resp.data.score) <= parseInt(game_score)) {
+                addMsg()
+                $('temp_msg').text(`New Record: ${game_score}`)
+                $('#high-score').text(game_score)
+            }
+            // $.ajax({
+            // type: "GET",
+            // url: '/score',
+            // data: { score: game_score },
+            // success: resp
+            // });
         }
         timer()
     }, 1000);
@@ -96,6 +94,6 @@ $('#start').on("click", function () {
     $('input').removeAttr('disabled');
     $('#start').attr('disabled', 'disabled');
     $('#score').text(0)
-    totalSeconds = 60;
+    totalSeconds = 10;
     timerRundown()
 })
