@@ -24,12 +24,13 @@ def check_guess():
 
 @app.route("/score", methods=["GET"])
 def store_score():
+    times_played = int(request.args['played']) +1
     score = request.args['score']
     high_score = session['high-score']
     if int(score) > int(high_score):
         session['high-score'] = int(score)
-        return jsonify({'score': score})
-    return jsonify({'score': session['high-score']})
+        return jsonify({'score': score, 'played': times_played})
+    return jsonify({'score': session['high-score'], 'played': times_played})
     
 
 

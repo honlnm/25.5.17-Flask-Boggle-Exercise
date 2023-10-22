@@ -1,39 +1,15 @@
 $('input').attr('disabled', 'disabled');
 
 //starting values:
-$('#timer').text(10)
+$('#timer').text(60)
 $('#score').text(0)
 $('#high-score').text(0)
+$('#played').text(0)
 
 //msg------------------
-$('#guess_form').submit(function (evt) {
-    const $guess = $('#guess_input_box').val();
-    $.ajax({
-        type: "GET",
-        url: '/check-word',
-        data: { currentGuess: $guess },
-        success: getResponse()
-    });
-    $('#guess_input_box').val("")
+$('#guess_form').submit(async function (evt) {
     evt.preventDefault();
-});
-
-function addMsg() {
-    const msg = $("<p id='temp_msg'></p>")
-    $('#msg').append(msg)
-}
-
-function rmvMsg() {
-    setTimeout(function () {
-        $('#temp_msg').remove()
-    },
-        3000
-    )
-}
-
-//show message based on server response
-async function getResponse() {
-    const $guess = $('#guess_input_box').val()
+    const $guess = $('#guess_input_box').val();
     const resp = await axios.get('/check-word', { params: { currentGuess: $guess } });
     if (resp.data.result === "not-on-board") {
         addMsg()
@@ -51,6 +27,20 @@ async function getResponse() {
         let newScore = parseInt($("#score").text()) + $guess.length;
         $('#score').text(newScore)
     }
+    $('#guess_input_box').val("")
+});
+
+function addMsg() {
+    const msg = $("<p id='temp_msg'></p>")
+    $('#msg').append(msg)
+}
+
+function rmvMsg() {
+    setTimeout(function () {
+        $('#temp_msg').remove()
+    },
+        3000
+    )
 }
 
 //Timer----------------
@@ -65,25 +55,20 @@ function timerRundown() {
     timesRun = 0;
     let timerStart = setInterval(async function () {
         timesRun += 1;
-        if (timesRun === 10) {
+        if (timesRun === 60) {
             clearInterval(timerStart);
             $('#start').removeAttr('disabled');
             $('input').attr('disabled', 'disabled');
             //score-------------------
-            debugger
-            const game_score = $('#score').text()
-            const resp = await axios.get("/score", { params: { score: game_score } })
-            if (parseInt(resp.data.score) <= parseInt(game_score)) {
+            const $game_score = $('#score').text()
+            let $played = $('#played').text()
+            const resp = await axios.get("/score", { params: { score: $game_score, played: $played } })
+            $('#played').text(resp.data.played)
+            if (parseInt(resp.data.score) <= parseInt($game_score)) {
                 addMsg()
-                $('temp_msg').text(`New Record: ${game_score}`)
-                $('#high-score').text(game_score)
+                $('temp_msg').text(`New Record: ${$game_score}`)
+                $('#high-score').text($game_score)
             }
-            // $.ajax({
-            // type: "GET",
-            // url: '/score',
-            // data: { score: game_score },
-            // success: resp
-            // });
         }
         timer()
     }, 1000);
@@ -94,6 +79,6 @@ $('#start').on("click", function () {
     $('input').removeAttr('disabled');
     $('#start').attr('disabled', 'disabled');
     $('#score').text(0)
-    totalSeconds = 10;
+    totalSeconds = 60;
     timerRundown()
 })
