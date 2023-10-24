@@ -11,7 +11,6 @@ def home_page():
     boggle_game = Boggle()
     new_board = boggle_game.make_board()
     session['board'] = new_board
-    session['high-score'] = "0"
     return render_template('index.html', board = new_board)
 
 @app.route("/check-word", methods=["GET"])
@@ -31,6 +30,16 @@ def store_score():
         session['high-score'] = int(score)
         return jsonify({'score': score, 'played': times_played})
     return jsonify({'score': session['high-score'], 'played': times_played})
-    
+
+@app.route('/new-game')
+def new_game():
+    session.pop('board', default=None)
+    boggle_game = Boggle()
+    new_board = boggle_game.make_board()
+    session['board'] = new_board
+    session.modified = True
+    return render_template('index.html', board = new_board)
+
+
 
 

@@ -25,19 +25,24 @@
             <p>You have played <span id="played"></span> times.</p>
         </div>
         <div id="msg"></div>
+        <div id="words-wrapper">
+            <ul id="words-list"></ul>
+        </div>
     </aside>
     <section id="game">
-        <div id="gameboard">
-            {% for lst in board %}
-            <section class="row">
-                {% for ltr in lst %}
-                <section class='column'>
-                    {{ltr}}
-                </section>
+        <table id="gameboard">
+            <tbody>
+                {% for row in board %}
+                <tr class="row">
+                    {% for cell in row %}
+                    <td class='column'>
+                        {{cell}}
+                    </td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </section>
-            {% endfor %}
-        </div>
+            </tbody>
+        </table>
         <div id="guess_form_wrapper">
             <form action="" id="guess_form">
                 <label for="guess_input_box">GUESS:</label>

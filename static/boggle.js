@@ -6,6 +6,7 @@ $('#score').text(0)
 $('#high-score').text(0)
 $('#played').text(0)
 
+
 //msg------------------
 $('#guess_form').submit(async function (evt) {
     evt.preventDefault();
@@ -75,7 +76,8 @@ function timerRundown() {
     timerStart
 }
 
-$('#start').on("click", function () {
+$('#start').on("click", async function () {
+    await fetch('/new-game');
     $('input').removeAttr('disabled');
     $('#start').attr('disabled', 'disabled');
     $('#score').text(0)

@@ -63,19 +63,15 @@ h1 {
 }
 
 #gameboard {
-    display: grid;
-    grid-template-columns: repeat(1, 100%);
-    grid-template-rows: repeat(5, 1fr);
+    table-layout: fixed;
     text-align: center;
     width: 25vw;
     height: auto;
-    gap: 5px 5px;
     margin: auto;
     margin-bottom: 5vh;
     font-size: 3vw;
     font-weight: bold;
     padding: 5px;
-    border-style: outset;
     box-shadow: -5px -5px 10px rgb(78, 57, 78);
     border-radius: 8px;
     background-color: rgb(78, 49, 0);
@@ -89,7 +85,6 @@ h1 {
     padding-right: 2.5vw;
     padding-bottom: 7px;
     padding-top: 7px;
-    border-style: outset;
     box-shadow: -5px -5px 10px rgb(78, 57, 78);
     border-radius: 8px;
     background-color: rgb(78, 49, 0);
@@ -97,62 +92,27 @@ h1 {
     text-align: center;
 }
 
-.row:nth-child(1) {
-    grid-row: 1/1;
-}
 
-.row:nth-child(2) {
-    grid-row: 2/2;
-}
-
-.row:nth-child(3) {
-    grid-row: 3/3;
-}
-
-.row:nth-child(4) {
-    grid-row: 4/4;
-}
-
-.row:nth-child(5) {
-    grid-row: 5/5;
+tbody {
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px 5px;
-}
-
-.column:nth-child(1) {
-    grid-column: 1/1;
-}
-
-.column:nth-child(2) {
-    grid-column: 2/2;
-}
-
-.column:nth-child(3) {
-    grid-column: 3/3;
-}
-
-.column:nth-child(4) {
-    grid-column: 4/4;
-}
-
-.column:nth-child(5) {
-    grid-column: 5/5;
+    width: 100%;
 }
 
 .column {
     background-color: rgba(255, 255, 255, 0.75);
     border-radius: 8px;
     border-style: inset;
+    border-color: rgb(78, 57, 78);
     box-shadow: inset 3px 3px 5px rgb(78, 57, 78);
 }
 
 #guess_input_box {
     background-color: rgba(255, 255, 255, 0.75);
-    border-style: inset;
     box-shadow: inset 3px 3px 5px rgb(78, 57, 78);
 }
 
