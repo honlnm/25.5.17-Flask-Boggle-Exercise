@@ -8,8 +8,8 @@ class BoggleGame {
         this.secs = $('#timer').text();
 
         $('input').attr('disabled', 'disabled');
-        $('#guess_form').on("submit", this.handleGuess);
-        $('#start').on("click", this.handleStartButton);
+        $('#guess_form').on("submit", this.handleGuess.bind(this));
+        $('#start').on("click", this.handleStartButton.bind(this));
     }
 
     addMsg() {
@@ -26,14 +26,14 @@ class BoggleGame {
     }
 
     async timer() {
-        --parseInt(this.secs);
-        if (parseInt(this.secs) < 10) this.secs = "0" + this.secs;
+        --this.secs;
+        if (this.secs < 10) this.secs = "0" + this.secs;
         $('#timer').text(this.secs)
     }
 
     timerRundown() {
         let timesRun = 0;
-        let timerStart = setInterval(async function () {
+        let timerStart = setInterval(async () => {
             timesRun += 1;
             if (timesRun === 60) {
                 clearInterval(timerStart);
@@ -44,13 +44,13 @@ class BoggleGame {
                 const resp = await axios.get("/score", { params: { score: $game_score, played: $played } })
                 $('#played').text(resp.data.played)
                 if (parseInt(resp.data.score) <= parseInt($game_score)) {
-                    addMsg()
+                    this.addMsg()
                     $('temp_msg').text(`New Record: ${$game_score}`)
-                    rmvMsg()
+                    this.rmvMsg()
                     $('#high-score').text($game_score)
                 }
             }
-            timer()
+            this.timer()
         }, 1000);
         timerStart
     }
@@ -60,30 +60,59 @@ class BoggleGame {
         const $guess = $('#guess_input_box').val();
         const resp = await axios.get('/check-word', { params: { currentGuess: $guess } });
         if (resp.data.result === "not-on-board") {
-            addMsg()
+            this.ddMsg()
             $('#temp_msg').text(`The word '${$guess}' is not on the board`)
-            rmvMsg()
+            this.rmvMsg()
         } else if (resp.data.result === "not-word") {
-            addMsg()
+            this.addMsg()
             $('#temp_msg').text(`The word '${$guess}' does not exist`)
-            rmvMsg()
+            this.rmvMsg()
         } else {
-            addMsg()
-            $('#temp_msg').text(`The word '${$guess}' has been found`)
-            rmvMsg()
-            let newScore = parseInt($("#score").text()) + $guess.length;
-            $('#score').text(newScore)
+            let found = false
+            $("#words-list li").each((id, elem) => {
+                if (elem.innerText == $guess) {
+                    found = true;
+                }
+            });
+            if (found === true) {
+                this.addMsg()
+                $('#temp_msg').text(`The word '${$guess}' has already been found`)
+                this.rmvMsg()
+            } else {
+                this.addMsg()
+                $('#temp_msg').text(`The word '${$guess}' has been found`)
+                this.rmvMsg()
+                let newScore = parseInt($("#score").text()) + $guess.length;
+                $('#score').text(newScore)
+                $('<li>').appendTo('#words-list').text($guess)
+            }
         }
         $('#guess_input_box').val("")
     }
 
     async handleStartButton(evt) {
         evt.preventDefault();
+        $('#words-list').empty().text('Words Found:')
+        const resp = await axios.get("/new-game")
+        const board = resp.data.board
+        console.log(board);
+        $('table').empty()
+        $('<tbody>').appendTo('table')
+        for (let row in board) {
+            $('<tr>').appendTo("table").attr("class", "row").attr("id", `row${row}`)
+            let letters = board[row]
+            console.log(letters)
+            for (let i = 0; i < letters.length; i++) {
+                let letter = letters[i]
+                console.log(letter)
+                $('<td>').appendTo(`#row${row}`).html(letter).attr("class", "column")
+            }
+        }
         $('input').removeAttr('disabled');
         $('#start').attr('disabled', 'disabled');
         $('#score').text(0);
         this.secs = 60;
-        this.timerRundown;
+        this.timerRundown();
     }
 }
 
